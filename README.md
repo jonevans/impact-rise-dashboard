@@ -1,6 +1,6 @@
-# Impact Rise - AI HR Platform Dashboard
+# DEMO - Impact Rise - AI HR Platform Dashboard
 
-A comprehensive AI transformation and talent management platform dashboard featuring real-time metrics, automation opportunities, and employee journey tracking.
+A comprehensive AI transformation and talent management platform dashboard featuring real-time metrics, automation opportunities, and employee journey tracking. All the data is cooked, fake phony. 
 
 ## 🚀 Features
 
