@@ -1,0 +1,2772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Rise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #dfe0e1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 40px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .notification-bell {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .notification-bell:hover {
+            opacity: 0.7;
+        }
+
+        .bell-icon {
+            width: 35px;
+            height: 35px;
+            filter: brightness(0) saturate(100%) invert(45%) sepia(7%) saturate(319%) hue-rotate(202deg) brightness(91%) contrast(87%);
+        }
+
+        .notification-bell:hover .bell-icon {
+            filter: brightness(0) saturate(100%) invert(26%) sepia(89%) saturate(1583%) hue-rotate(342deg) brightness(92%) contrast(96%);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 300px;
+            z-index: 1000;
+            display: none;
+            margin-top: 8px;
+        }
+
+        .notification-dropdown.show {
+            display: block;
+        }
+
+        .notification-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item:hover {
+            background: #f8f9fa;
+        }
+
+        .notification-item.unread {
+            background: #fff8f8;
+            border-left: 3px solid #dc3545;
+        }
+
+        .notification-text {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .user-profile:hover {
+            background: #f8f9fa;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            color: #6c757d;
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-width: 140px;
+            z-index: 1000;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            text-align: left;
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+        }
+
+        .header p {
+            color: #6c757d;
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.2s ease;
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab.active {
+            background: #dc3545;
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .content {
+            min-height: 500px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .metric-card:hover {
+            border-color: #dc3545;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .metric-card::after {
+            content: "Click for details";
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 10px;
+            color: #6c757d;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card:hover::after {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            min-width: 700px;
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: #dc3545;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-label {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .breakdown-value {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 2.4em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .metric-change {
+            font-size: 13px;
+            color: #dc3545;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trend-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .sparkline {
+            width: 40px;
+            height: 16px;
+            margin-right: 4px;
+        }
+
+        .sparkline svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .sparkline-path {
+            fill: none;
+            stroke: #dc3545;
+            stroke-width: 1.5;
+            opacity: 0.8;
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: sparklineDraw 1.5s ease-out 3 forwards;
+        }
+
+        .sparkline-arrow {
+            fill: #dc3545;
+            opacity: 0;
+            animation: sparklineArrowShow 0.3s ease-out 4.5s forwards;
+        }
+
+        @keyframes sparklineDraw {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes sparklineArrowShow {
+            to { opacity: 0.8; }
+        }
+
+        .trend-arrow {
+            font-size: 10px;
+            color: #28a745;
+        }
+
+        .trend-arrow.down {
+            color: #dc3545;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .chart-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .scatter-plot {
+            position: relative;
+            height: 320px;
+            background: #fafafa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+        }
+
+        .scatter-plot::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50px;
+            right: 30px;
+            bottom: 30px;
+            background-image: 
+                linear-gradient(to right, #e0e0e0 1px, transparent 1px),
+                linear-gradient(to bottom, #e0e0e0 1px, transparent 1px);
+            background-size: 10% 10%;
+            pointer-events: none;
+        }
+
+        .scatter-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .scatter-dot:hover {
+            transform: scale(1.5);
+            z-index: 10;
+        }
+
+        .scatter-dot::after {
+            content: attr(data-task);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 100;
+        }
+
+        .scatter-dot:hover::after {
+            opacity: 1;
+        }
+
+        .axis-label {
+            position: absolute;
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .x-axis { bottom: 8px; left: 50%; transform: translateX(-50%); }
+        .y-axis { left: -20px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+
+        .task-list {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        .task-item {
+            padding: 20px 24px;
+            border-bottom: 1px solid #f1f3f4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item:hover {
+            background: #fafafa;
+        }
+
+        .task-info h4 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .task-department {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .task-metrics {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .automation-score {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .high-automation { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+        .medium-automation { 
+            background: #fff3cd; 
+            color: #856404; 
+        }
+        .low-automation { 
+            background: #f8d7da; 
+            color: #721c24; 
+        }
+
+        .cost-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .investment-tracker {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-section {
+            margin: 16px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .progress-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #dc3545;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+
+        .status-ahead {
+            color: #dc3545;
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .ksao-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .department-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .department-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .department-card:hover {
+            border-color: #dc3545;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .department-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .department-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .department-stat-label {
+            color: #6c757d;
+        }
+
+        .department-stat-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .department-readiness {
+            margin-top: 12px;
+        }
+
+        .readiness-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .timeline-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .quarter-column {
+            flex: 1;
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+        }
+
+        .quarter-header {
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .timeline-task {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .timeline-task:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-task:hover {
+            border-color: #dc3545;
+        }
+
+        .timeline-task-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .timeline-task-savings {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 6px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-planned {
+            background: #28a745;
+        }
+
+        .status-in-progress {
+            background: #ffc107;
+        }
+
+        .status-delayed {
+            background: #dc3545;
+        }
+
+        .timeline-status {
+            font-size: 11px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .mobility-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .mobility-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .mobility-card:hover {
+            border-color: #dc3545;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .mobility-role {
+            font-weight: 600;
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .mobility-candidate {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .candidate-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            margin-right: 12px;
+        }
+
+        .candidate-info {
+            flex: 1;
+        }
+
+        .candidate-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .candidate-current {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        .skill-gap {
+            margin-bottom: 12px;
+        }
+
+        .gap-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .gap-value {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .cost-comparison {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        .cost-item {
+            text-align: center;
+        }
+
+        .cost-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+
+        .cost-value {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .cost-training {
+            color: #28a745;
+        }
+
+        .cost-external {
+            color: #dc3545;
+        }
+
+        .success-stories {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+
+        .story-card {
+            padding: 24px;
+            border-bottom: 1px solid #f1f3f4;
+            transition: background 0.2s ease;
+        }
+
+        .story-card:last-child {
+            border-bottom: none;
+        }
+
+        .story-card:hover {
+            background: #fafafa;
+        }
+
+        .story-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .story-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 14px;
+        }
+
+        .story-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .story-transformation {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .story-metrics {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 12px;
+        }
+
+        .story-metric {
+            text-align: center;
+        }
+
+        .story-metric-value {
+            font-weight: 600;
+            color: #dc3545;
+            font-size: 16px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .story-quote {
+            font-style: italic;
+            color: #6c757d;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #dc3545;
+        }
+
+        .ksao-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .ksao-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .ksao-category {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .ksao-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .ksao-item:last-child {
+            border-bottom: none;
+        }
+
+        .ksao-name {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .skill-level {
+            width: 80px;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .skill-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc3545, #c82333);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .employee-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .employee-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dc3545;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        .employee-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .employee-role {
+            color: #6c757d;
+            font-size: 13px;
+        }
+
+        .career-path {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .career-step {
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .career-step.current {
+            background: #dc3545;
+            color: white;
+        }
+
+        .career-step.next {
+            background: #6c757d;
+            color: white;
+        }
+
+        .arrow {
+            color: #adb5bd;
+            font-size: 12px;
+        }
+
+        .employee-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .detail-section h4 {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-list {
+            color: #6c757d;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            padding: 20px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 16px;
+            background: #fafafa;
+            border-radius: 8px;
+        }
+
+        .summary-number {
+            font-size: 2em;
+            font-weight: 600;
+            color: #dc3545;
+            margin-bottom: 4px;
+        }
+
+        .summary-label {
+            color: #6c757d;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .metrics-grid, .ksao-grid, .department-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .tab:last-child {
+                border-bottom: none;
+            }
+            
+            .metrics-grid, .ksao-grid, .department-grid, .mobility-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .investment-tracker {
+                grid-template-columns: 1fr;
+            }
+
+            .employee-details {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .header-left {
+                justify-content: center;
+            }
+
+            .header-right {
+                justify-content: center;
+            }
+
+            .header-logo {
+                height: 50px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .user-name, .user-role {
+                display: none;
+            }
+
+            .timeline-container {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <img src="logo.png" alt="Company Logo" class="header-logo">
+                    <h1>Impact Rise - Intelligent Workforce Optimization</h1>
+                </div>
+                <div class="header-right">
+                    <div style="position: relative;">
+                        <button class="notification-bell" onclick="toggleNotifications()" title="Notifications">
+                            <img src="notifications_34dp_1F1F1F_FILL0_wght400_GRAD0_opsz40.png" alt="Notifications" class="bell-icon">
+                            <span class="notification-badge">1</span>
+                        </button>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">Notifications</div>
+                            <div class="notification-item unread">
+                                <div class="notification-text">AI Assessment of Admin tasks complete</div>
+                                <div class="notification-time">2 minutes ago</div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-text">Data analysis report generated successfully</div>
+                                <div class="notification-time">1 hour ago</div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-text">Talent development metrics updated</div>
+                                <div class="notification-time">3 hours ago</div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-text">Weekly automation summary ready</div>
+                                <div class="notification-time">1 day ago</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="user-profile" onclick="toggleDropdown()">
+                        <div class="user-avatar">JS</div>
+                        <div class="user-info">
+                            <div class="user-name">J. Strummer</div>
+                            <div class="user-role">Admin</div>
+                        </div>
+                        <div class="dropdown" id="userDropdown">
+                            <button class="dropdown-item" onclick="selectRole('HR Admin')">HR Admin</button>
+                            <button class="dropdown-item" onclick="selectRole('Data Admin')">Data Admin</button>
+                            <button class="dropdown-item" onclick="logout()">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('executive')">Executive Overview</button>
+            <button class="tab" onclick="showTab('automation')">Automation Opportunities</button>
+            <button class="tab" onclick="showTab('investment')">Reinvestment Tracking</button>
+            <button class="tab" onclick="showTab('talent')">Talent Development</button>
+            <button class="tab" onclick="showTab('individual')">Employee Journeys</button>
+        </div>
+
+        <div class="content">
+            <!-- Executive Overview Tab -->
+            <div class="tab-content active" id="executive">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">$2.4M</div>
+                        <div class="metric-label">Annual Task Costs</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,12 L8,8 L14,10 L20,6 L26,9 L32,4 L38,7"/>
+                                        <polygon class="sparkline-arrow" points="36,5 40,7 36,9"/>
+                                    </svg>
+                                </div>
+                                +$180K identified for automation
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">847</div>
+                        <div class="metric-label">Unique Tasks Mapped</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,14 L8,12 L14,8 L20,10 L26,6 L32,4 L38,3"/>
+                                        <polygon class="sparkline-arrow" points="36,1 40,3 36,5"/>
+                                    </svg>
+                                </div>
+                                ↑ 23% coverage this quarter
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">68%</div>
+                        <div class="metric-label">KSAO Alignment</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,10 L8,11 L14,9 L20,7 L26,5 L32,4 L38,3"/>
+                                        <polygon class="sparkline-arrow" points="36,1 40,3 36,5"/>
+                                    </svg>
+                                </div>
+                                ↑ 12% from Q3
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$540K</div>
+                        <div class="metric-label">L&D Reinvestment Fund</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,13 L8,10 L14,7 L20,9 L26,5 L32,3 L38,2"/>
+                                        <polygon class="sparkline-arrow" points="36,0 40,2 36,4"/>
+                                    </svg>
+                                </div>
+                                From AI efficiency gains
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Automation Potential vs. Annual Task Costs</div>
+                    <div class="scatter-plot">
+                        <!-- High automation, high cost (green) - best ROI targets -->
+                        <div class="scatter-dot" style="left: 87%; bottom: 82%; background: #28a745;" data-task="Email Processing"></div>
+                        <div class="scatter-dot" style="left: 91%; bottom: 75%; background: #28a745;" data-task="Data Entry"></div>
+                        <div class="scatter-dot" style="left: 84%; bottom: 88%; background: #28a745;" data-task="Invoice Processing"></div>
+                        <div class="scatter-dot" style="left: 89%; bottom: 79%; background: #28a745;" data-task="Document Scanning"></div>
+                        <div class="scatter-dot" style="left: 93%; bottom: 85%; background: #28a745;" data-task="Payroll Processing"></div>
+                        <div class="scatter-dot" style="left: 85%; bottom: 91%; background: #28a745;" data-task="Expense Reporting"></div>
+                        
+                        <!-- High automation, medium-high cost (light green) -->
+                        <div class="scatter-dot" style="left: 86%; bottom: 62%; background: #5cb85c;" data-task="Customer Support"></div>
+                        <div class="scatter-dot" style="left: 94%; bottom: 58%; background: #5cb85c;" data-task="Order Processing"></div>
+                        <div class="scatter-dot" style="left: 82%; bottom: 68%; background: #5cb85c;" data-task="Inventory Tracking"></div>
+                        <div class="scatter-dot" style="left: 78%; bottom: 55%; background: #5cb85c;" data-task="Appointment Scheduling"></div>
+                        <div class="scatter-dot" style="left: 90%; bottom: 65%; background: #5cb85c;" data-task="Report Generation"></div>
+                        <div class="scatter-dot" style="left: 88%; bottom: 72%; background: #5cb85c;" data-task="Database Updates"></div>
+                        <div class="scatter-dot" style="left: 95%; bottom: 63%; background: #5cb85c;" data-task="Form Processing"></div>
+                        <div class="scatter-dot" style="left: 80%; bottom: 59%; background: #5cb85c;" data-task="File Organization"></div>
+                        
+                        <!-- High automation, medium cost (yellow) -->
+                        <div class="scatter-dot" style="left: 85%; bottom: 45%; background: #ffc107;" data-task="Basic Calculations"></div>
+                        <div class="scatter-dot" style="left: 91%; bottom: 38%; background: #ffc107;" data-task="Data Validation"></div>
+                        <div class="scatter-dot" style="left: 88%; bottom: 42%; background: #ffc107;" data-task="Email Sorting"></div>
+                        <div class="scatter-dot" style="left: 79%; bottom: 48%; background: #ffc107;" data-task="Calendar Management"></div>
+                        <div class="scatter-dot" style="left: 83%; bottom: 35%; background: #ffc107;" data-task="Simple Formatting"></div>
+                        <div class="scatter-dot" style="left: 92%; bottom: 44%; background: #ffc107;" data-task="Contact Management"></div>
+                        <div class="scatter-dot" style="left: 87%; bottom: 39%; background: #ffc107;" data-task="Basic Transcription"></div>
+                        <div class="scatter-dot" style="left: 94%; bottom: 41%; background: #ffc107;" data-task="Task Reminders"></div>
+                        <div class="scatter-dot" style="left: 81%; bottom: 46%; background: #ffc107;" data-task="Standard Replies"></div>
+                        
+                        <!-- Medium-high automation, high cost (orange) -->
+                        <div class="scatter-dot" style="left: 72%; bottom: 85%; background: #fd7e14;" data-task="Quality Assurance"></div>
+                        <div class="scatter-dot" style="left: 69%; bottom: 78%; background: #fd7e14;" data-task="Complex Analysis"></div>
+                        <div class="scatter-dot" style="left: 75%; bottom: 82%; background: #fd7e14;" data-task="Compliance Checking"></div>
+                        <div class="scatter-dot" style="left: 71%; bottom: 88%; background: #fd7e14;" data-task="Financial Reporting"></div>
+                        <div class="scatter-dot" style="left: 77%; bottom: 92%; background: #fd7e14;" data-task="Risk Assessment"></div>
+                        <div class="scatter-dot" style="left: 73%; bottom: 74%; background: #fd7e14;" data-task="Performance Monitoring"></div>
+                        <div class="scatter-dot" style="left: 68%; bottom: 86%; background: #fd7e14;" data-task="Audit Preparation"></div>
+                        
+                        <!-- Medium automation, medium cost (darker orange) -->
+                        <div class="scatter-dot" style="left: 58%; bottom: 62%; background: #e8690b;" data-task="Technical Support"></div>
+                        <div class="scatter-dot" style="left: 65%; bottom: 58%; background: #e8690b;" data-task="Content Creation"></div>
+                        <div class="scatter-dot" style="left: 61%; bottom: 65%; background: #e8690b;" data-task="Process Monitoring"></div>
+                        <div class="scatter-dot" style="left: 55%; bottom: 52%; background: #e8690b;" data-task="Data Review"></div>
+                        <div class="scatter-dot" style="left: 68%; bottom: 55%; background: #e8690b;" data-task="Marketing Analysis"></div>
+                        <div class="scatter-dot" style="left: 62%; bottom: 72%; background: #e8690b;" data-task="User Testing"></div>
+                        <div class="scatter-dot" style="left: 59%; bottom: 69%; background: #e8690b;" data-task="Research Tasks"></div>
+                        <div class="scatter-dot" style="left: 66%; bottom: 61%; background: #e8690b;" data-task="System Updates"></div>
+                        <div class="scatter-dot" style="left: 53%; bottom: 57%; background: #e8690b;" data-task="Documentation Updates"></div>
+                        <div class="scatter-dot" style="left: 71%; bottom: 64%; background: #e8690b;" data-task="Workflow Design"></div>
+                        <div class="scatter-dot" style="left: 57%; bottom: 75%; background: #e8690b;" data-task="Training Materials"></div>
+                        
+                        <!-- Medium automation, lower cost (light orange) -->
+                        <div class="scatter-dot" style="left: 64%; bottom: 42%; background: #ffb366;" data-task="Content Moderation"></div>
+                        <div class="scatter-dot" style="left: 58%; bottom: 38%; background: #ffb366;" data-task="Basic Testing"></div>
+                        <div class="scatter-dot" style="left: 67%; bottom: 45%; background: #ffb366;" data-task="Simple Reviews"></div>
+                        <div class="scatter-dot" style="left: 59%; bottom: 48%; background: #ffb366;" data-task="Social Media"></div>
+                        <div class="scatter-dot" style="left: 69%; bottom: 34%; background: #ffb366;" data-task="Survey Processing"></div>
+                        <div class="scatter-dot" style="left: 52%; bottom: 41%; background: #ffb366;" data-task="Basic Editing"></div>
+                        <div class="scatter-dot" style="left: 74%; bottom: 37%; background: #ffb366;" data-task="Simple Formatting"></div>
+                        <div class="scatter-dot" style="left: 61%; bottom: 32%; background: #ffb366;" data-task="Image Processing"></div>
+                        
+                        <!-- Lower automation, high cost (light red) -->
+                        <div class="scatter-dot" style="left: 42%; bottom: 85%; background: #f1878f;" data-task="Strategic Planning"></div>
+                        <div class="scatter-dot" style="left: 38%; bottom: 88%; background: #f1878f;" data-task="Executive Decisions"></div>
+                        <div class="scatter-dot" style="left: 45%; bottom: 82%; background: #f1878f;" data-task="Complex Negotiations"></div>
+                        <div class="scatter-dot" style="left: 35%; bottom: 78%; background: #f1878f;" data-task="Creative Development"></div>
+                        <div class="scatter-dot" style="left: 48%; bottom: 75%; background: #f1878f;" data-task="Business Development"></div>
+                        <div class="scatter-dot" style="left: 40%; bottom: 92%; background: #f1878f;" data-task="Innovation Strategy"></div>
+                        <div class="scatter-dot" style="left: 32%; bottom: 84%; background: #f1878f;" data-task="Market Analysis"></div>
+                        <div class="scatter-dot" style="left: 51%; bottom: 89%; background: #f1878f;" data-task="Partnership Development"></div>
+                        <div class="scatter-dot" style="left: 44%; bottom: 91%; background: #f1878f;" data-task="Product Strategy"></div>
+                        
+                        <!-- Low automation, medium cost (red) -->
+                        <div class="scatter-dot" style="left: 32%; bottom: 62%; background: #dc3545;" data-task="Client Relations"></div>
+                        <div class="scatter-dot" style="left: 28%; bottom: 58%; background: #dc3545;" data-task="Problem Solving"></div>
+                        <div class="scatter-dot" style="left: 45%; bottom: 65%; background: #dc3545;" data-task="Team Leadership"></div>
+                        <div class="scatter-dot" style="left: 38%; bottom: 52%; background: #dc3545;" data-task="Training Development"></div>
+                        <div class="scatter-dot" style="left: 25%; bottom: 68%; background: #dc3545;" data-task="Employee Mentoring"></div>
+                        <div class="scatter-dot" style="left: 42%; bottom: 55%; background: #dc3545;" data-task="Project Management"></div>
+                        <div class="scatter-dot" style="left: 29%; bottom: 71%; background: #dc3545;" data-task="Change Management"></div>
+                        <div class="scatter-dot" style="left: 47%; bottom: 49%; background: #dc3545;" data-task="Conflict Resolution"></div>
+                        <div class="scatter-dot" style="left: 34%; bottom: 74%; background: #dc3545;" data-task="Culture Development"></div>
+                        <div class="scatter-dot" style="left: 21%; bottom: 59%; background: #dc3545;" data-task="Performance Coaching"></div>
+                        <div class="scatter-dot" style="left: 49%; bottom: 72%; background: #dc3545;" data-task="Stakeholder Management"></div>
+                        <div class="scatter-dot" style="left: 26%; bottom: 46%; background: #dc3545;" data-task="Custom Solutions"></div>
+                        
+                        <!-- Low automation, lower cost (dark red) -->
+                        <div class="scatter-dot" style="left: 35%; bottom: 42%; background: #b21e2f;" data-task="Personal Consultation"></div>
+                        <div class="scatter-dot" style="left: 28%; bottom: 38%; background: #b21e2f;" data-task="Custom Service"></div>
+                        <div class="scatter-dot" style="left: 42%; bottom: 45%; background: #b21e2f;" data-task="Specialized Support"></div>
+                        <div class="scatter-dot" style="left: 25%; bottom: 32%; background: #b21e2f;" data-task="Personal Training"></div>
+                        <div class="scatter-dot" style="left: 38%; bottom: 35%; background: #b21e2f;" data-task="Individual Coaching"></div>
+                        <div class="scatter-dot" style="left: 31%; bottom: 29%; background: #b21e2f;" data-task="Creative Writing"></div>
+                        <div class="scatter-dot" style="left: 47%; bottom: 38%; background: #b21e2f;" data-task="Therapy Sessions"></div>
+                        <div class="scatter-dot" style="left: 22%; bottom: 41%; background: #b21e2f;" data-task="Art Direction"></div>
+                        <div class="scatter-dot" style="left: 44%; bottom: 33%; background: #b21e2f;" data-task="Personal Styling"></div>
+                        <div class="scatter-dot" style="left: 39%; bottom: 28%; background: #b21e2f;" data-task="Life Coaching"></div>
+                        
+                        <!-- Scattered additional points for realism -->
+                        <div class="scatter-dot" style="left: 76%; bottom: 53%; background: #ffc107;" data-task="Email Triage"></div>
+                        <div class="scatter-dot" style="left: 54%; bottom: 34%; background: #ffb366;" data-task="Basic Analytics"></div>
+                        <div class="scatter-dot" style="left: 63%; bottom: 89%; background: #fd7e14;" data-task="Regulatory Compliance"></div>
+                        <div class="scatter-dot" style="left: 15%; bottom: 55%; background: #dc3545;" data-task="Crisis Management"></div>
+                        <div class="scatter-dot" style="left: 18%; bottom: 73%; background: #dc3545;" data-task="Executive Coaching"></div>
+                        <div class="scatter-dot" style="left: 77%; bottom: 29%; background: #ffc107;" data-task="Simple Scheduling"></div>
+                        <div class="scatter-dot" style="left: 12%; bottom: 82%; background: #f1878f;" data-task="Vision Setting"></div>
+                        <div class="scatter-dot" style="left: 56%; bottom: 26%; background: #ffb366;" data-task="Content Tagging"></div>
+                        <div class="scatter-dot" style="left: 33%; bottom: 51%; background: #dc3545;" data-task="Team Building"></div>
+                        <div class="scatter-dot" style="left: 73%; bottom: 67%; background: #e8690b;" data-task="Process Design"></div>
+                        
+                        <div class="axis-label x-axis">AI Automation Potential →</div>
+                        <div class="axis-label y-axis">Annual Cost ($) →</div>
+                    </div>
+                </div>
+
+                <div class="investment-tracker">
+                    <div class="chart-container">
+                        <div class="chart-title">AI Savings Reinvestment Pipeline</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Q4 AI Efficiency Savings</span>
+                                <span class="progress-value">$180K</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                            <div class="status-ahead">Ahead by 2 weeks</div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Allocated to L&D Programs</span>
+                                <span class="progress-value">$135K (75%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Job Description Modernization</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Task-Based JDs Complete</span>
+                                <span class="progress-value">142/220 roles</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">KSAO Integration</span>
+                                <span class="progress-value">89/220 roles</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Automation Opportunities Tab -->
+            <div class="tab-content" id="automation">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">$215K</div>
+                        <div class="metric-label">Potential Annual Savings</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,11 L8,9 L14,6 L20,8 L26,4 L32,2 L38,3"/>
+                                        <polygon class="sparkline-arrow" points="36,1 40,3 36,5"/>
+                                    </svg>
+                                </div>
+                                From top 5 automation targets
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">18</div>
+                        <div class="metric-label">Roles Affected</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,8 L8,10 L14,7 L20,5 L26,6 L32,3 L38,4"/>
+                                        <polygon class="sparkline-arrow" points="36,2 40,4 36,6"/>
+                                    </svg>
+                                </div>
+                                Requiring reskill planning
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">6-9</div>
+                        <div class="metric-label">Months ROI</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,12 L8,10 L14,8 L20,6 L26,4 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                Implementation timeline
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">12</div>
+                        <div class="metric-label">Quick Wins Available</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,14 L8,11 L14,8 L20,5 L26,3 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                High automation + low complexity
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">High-Priority Automation Opportunities</div>
+                    <div class="task-list">
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Email Processing & Routing</h4>
+                                <div class="task-department">Customer Service • IT Operations</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="automation-score high-automation">High (0.89)</div>
+                                <div class="cost-value">$45K/year</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Invoice Data Entry</h4>
+                                <div class="task-department">Accounting • Procurement</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="automation-score high-automation">High (0.92)</div>
+                                <div class="cost-value">$28K/year</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Report Generation</h4>
+                                <div class="task-department">Analytics • Operations</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="automation-score medium-automation">Medium (0.67)</div>
+                                <div class="cost-value">$67K/year</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Customer Support L1</h4>
+                                <div class="task-department">Customer Service</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="automation-score medium-automation">Medium (0.71)</div>
+                                <div class="cost-value">$34K/year</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Quality Assurance Testing</h4>
+                                <div class="task-department">Product • Engineering</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="automation-score medium-automation">Medium (0.58)</div>
+                                <div class="cost-value">$41K/year</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Implementation Roadmap (Next 12 Months)</div>
+                    <div class="timeline-container">
+                        <div class="quarter-column">
+                            <div class="quarter-header">Q1 2026</div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Email Processing</div>
+                                <div class="timeline-task-savings">Expected: $45K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-in-progress"></span>
+                                    In Progress
+                                </div>
+                            </div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Invoice Data Entry</div>
+                                <div class="timeline-task-savings">Expected: $28K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quarter-column">
+                            <div class="quarter-header">Q2 2026</div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Report Generation</div>
+                                <div class="timeline-task-savings">Expected: $67K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Customer Support L1</div>
+                                <div class="timeline-task-savings">Expected: $34K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quarter-column">
+                            <div class="quarter-header">Q3 2026</div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Quality Assurance</div>
+                                <div class="timeline-task-savings">Expected: $41K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Payroll Processing</div>
+                                <div class="timeline-task-savings">Expected: $52K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-delayed"></span>
+                                    At Risk
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="quarter-column">
+                            <div class="quarter-header">Q4 2026</div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Document Scanning</div>
+                                <div class="timeline-task-savings">Expected: $38K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                            <div class="timeline-task">
+                                <div class="timeline-task-name">Expense Reporting</div>
+                                <div class="timeline-task-savings">Expected: $29K/year</div>
+                                <div class="timeline-status">
+                                    <span class="status-indicator status-planned"></span>
+                                    Planned
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Automation Impact by Department</div>
+                    <div class="department-grid">
+                        <div class="department-card">
+                            <div class="department-name">Customer Service</div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Automatable Tasks</span>
+                                <span class="department-stat-value">8</span>
+                            </div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Potential Savings</span>
+                                <span class="department-stat-value">$127K</span>
+                            </div>
+                            <div class="department-readiness">
+                                <div class="readiness-label">Automation Readiness</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%;"></div>
+                                </div>
+                                <div style="font-size: 12px; color: #333; font-weight: 600; margin-top: 4px;">85%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-card">
+                            <div class="department-name">Accounting</div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Automatable Tasks</span>
+                                <span class="department-stat-value">5</span>
+                            </div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Potential Savings</span>
+                                <span class="department-stat-value">$89K</span>
+                            </div>
+                            <div class="department-readiness">
+                                <div class="readiness-label">Automation Readiness</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%;"></div>
+                                </div>
+                                <div style="font-size: 12px; color: #333; font-weight: 600; margin-top: 4px;">92%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-card">
+                            <div class="department-name">Operations</div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Automatable Tasks</span>
+                                <span class="department-stat-value">6</span>
+                            </div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Potential Savings</span>
+                                <span class="department-stat-value">$156K</span>
+                            </div>
+                            <div class="department-readiness">
+                                <div class="readiness-label">Automation Readiness</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 73%;"></div>
+                                </div>
+                                <div style="font-size: 12px; color: #333; font-weight: 600; margin-top: 4px;">73%</div>
+                            </div>
+                        </div>
+                        
+                        <div class="department-card">
+                            <div class="department-name">IT Support</div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Automatable Tasks</span>
+                                <span class="department-stat-value">4</span>
+                            </div>
+                            <div class="department-stat">
+                                <span class="department-stat-label">Potential Savings</span>
+                                <span class="department-stat-value">$78K</span>
+                            </div>
+                            <div class="department-readiness">
+                                <div class="readiness-label">Automation Readiness</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 88%;"></div>
+                                </div>
+                                <div style="font-size: 12px; color: #333; font-weight: 600; margin-top: 4px;">88%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Talent Development Tab -->
+            <div class="tab-content" id="talent">
+                <div class="ksao-grid">
+                    <div class="ksao-card">
+                        <div class="ksao-category">Knowledge Areas</div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Data Analysis</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 72%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">AI/ML Fundamentals</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Process Optimization</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 68%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Digital Tools</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 81%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ksao-card">
+                        <div class="ksao-category">Skills</div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Critical Thinking</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 79%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Collaboration</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Adaptability</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 62%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Communication</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 77%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ksao-card">
+                        <div class="ksao-category">Abilities</div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Problem Solving</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 73%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Pattern Recognition</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 56%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Systems Thinking</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 48%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Learning Agility</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 82%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ksao-card">
+                        <div class="ksao-category">Other Characteristics</div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Growth Mindset</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 74%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Tech Comfort</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 69%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Change Resilience</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 58%;"></div>
+                            </div>
+                        </div>
+                        <div class="ksao-item">
+                            <span class="ksao-name">Initiative</span>
+                            <div class="skill-level">
+                                <div class="skill-fill" style="width: 76%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container" style="margin-top: 20px;">
+                    <div class="chart-title">Priority Development Areas (Funded by AI Savings)</div>
+                    <div class="task-list">
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>AI/ML Fundamentals Training</h4>
+                                <div class="task-department">45% avg proficiency • High automation complement</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="cost-value">$45K allocated</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Systems Thinking Development</h4>
+                                <div class="task-department">48% avg proficiency • Strategic advantage</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="cost-value">$32K allocated</div>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <h4>Change Management Certification</h4>
+                                <div class="task-department">58% avg proficiency • Transformation critical</div>
+                            </div>
+                            <div class="task-metrics">
+                                <div class="cost-value">$28K allocated</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Internal Mobility Opportunities</div>
+                    <div class="mobility-grid">
+                        <div class="mobility-card">
+                            <div class="mobility-role">Senior Data Analyst</div>
+                            <div class="mobility-candidate">
+                                <div class="candidate-avatar">AR</div>
+                                <div class="candidate-info">
+                                    <div class="candidate-name">Alex Rodriguez</div>
+                                    <div class="candidate-current">Customer Service Specialist</div>
+                                </div>
+                            </div>
+                            <div class="skill-gap">
+                                <div class="gap-label">Skill Gap:</div>
+                                <div class="gap-value">Advanced SQL & Data Visualization</div>
+                            </div>
+                            <div class="cost-comparison">
+                                <div class="cost-item">
+                                    <div class="cost-label">Training Cost</div>
+                                    <div class="cost-value cost-training">$8K</div>
+                                </div>
+                                <div style="color: #6c757d; font-size: 12px;">vs</div>
+                                <div class="cost-item">
+                                    <div class="cost-label">External Hire</div>
+                                    <div class="cost-value cost-external">$95K</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mobility-card">
+                            <div class="mobility-role">Process Improvement Manager</div>
+                            <div class="mobility-candidate">
+                                <div class="candidate-avatar">JP</div>
+                                <div class="candidate-info">
+                                    <div class="candidate-name">Jordan Patel</div>
+                                    <div class="candidate-current">Data Entry Specialist</div>
+                                </div>
+                            </div>
+                            <div class="skill-gap">
+                                <div class="gap-label">Skill Gap:</div>
+                                <div class="gap-value">Lean Six Sigma Certification</div>
+                            </div>
+                            <div class="cost-comparison">
+                                <div class="cost-item">
+                                    <div class="cost-label">Training Cost</div>
+                                    <div class="cost-value cost-training">$12K</div>
+                                </div>
+                                <div style="color: #6c757d; font-size: 12px;">vs</div>
+                                <div class="cost-item">
+                                    <div class="cost-label">External Hire</div>
+                                    <div class="cost-value cost-external">$110K</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mobility-card">
+                            <div class="mobility-role">Business Intelligence Analyst</div>
+                            <div class="mobility-candidate">
+                                <div class="candidate-avatar">RW</div>
+                                <div class="candidate-info">
+                                    <div class="candidate-name">Riley Wong</div>
+                                    <div class="candidate-current">Invoice Processing</div>
+                                </div>
+                            </div>
+                            <div class="skill-gap">
+                                <div class="gap-label">Skill Gap:</div>
+                                <div class="gap-value">Power BI & Statistical Analysis</div>
+                            </div>
+                            <div class="cost-comparison">
+                                <div class="cost-item">
+                                    <div class="cost-label">Training Cost</div>
+                                    <div class="cost-value cost-training">$10K</div>
+                                </div>
+                                <div style="color: #6c757d; font-size: 12px;">vs</div>
+                                <div class="cost-item">
+                                    <div class="cost-label">External Hire</div>
+                                    <div class="cost-value cost-external">$88K</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mobility-card">
+                            <div class="mobility-role">Marketing Analytics Specialist</div>
+                            <div class="mobility-candidate">
+                                <div class="candidate-avatar">SM</div>
+                                <div class="candidate-info">
+                                    <div class="candidate-name">Sam Miller</div>
+                                    <div class="candidate-current">Data Entry Clerk</div>
+                                </div>
+                            </div>
+                            <div class="skill-gap">
+                                <div class="gap-label">Skill Gap:</div>
+                                <div class="gap-value">Google Analytics & A/B Testing</div>
+                            </div>
+                            <div class="cost-comparison">
+                                <div class="cost-item">
+                                    <div class="cost-label">Training Cost</div>
+                                    <div class="cost-value cost-training">$6K</div>
+                                </div>
+                                <div style="color: #6c757d; font-size: 12px;">vs</div>
+                                <div class="cost-item">
+                                    <div class="cost-label">External Hire</div>
+                                    <div class="cost-value cost-external">$75K</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Reinvestment Tracking Tab -->
+            <div class="tab-content" id="investment">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">$540K</div>
+                        <div class="metric-label">Total Reinvestment Fund</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,13 L8,11 L14,8 L20,6 L26,4 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                From Q1-Q4 AI implementations
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$387K</div>
+                        <div class="metric-label">L&D Investments Made</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,12 L8,10 L14,7 L20,8 L26,5 L32,3 L38,2"/>
+                                        <polygon class="sparkline-arrow" points="36,0 40,2 36,4"/>
+                                    </svg>
+                                </div>
+                                72% of available funds deployed
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">124</div>
+                        <div class="metric-label">Employees Reskilled</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,14 L8,12 L14,9 L20,7 L26,4 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                ↑ 89% vs. traditional budget
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">3.2x</div>
+                        <div class="metric-label">Training ROI</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,10 L8,8 L14,6 L20,4 L26,3 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                Productivity gain multiplier
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="investment-tracker">
+                    <div class="chart-container">
+                        <div class="chart-title">AI Savings → Human Investment Flow</div>
+                        <div style="padding: 20px 0;">
+                            <div style="margin: 12px 0; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc3545;">
+                                <strong>Email Automation:</strong> $58K saved → $14.5K invested in advanced communication skills
+                            </div>
+                            <div style="margin: 12px 0; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dc3545;">
+                                <strong>Data Entry Automation:</strong> $35K saved → $8.8K invested in data analysis training
+                            </div>
+                            <div style="margin: 12px 0; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #ffc107;">
+                                <strong>Report Generation:</strong> $84K potential → $21K earmarked for strategic planning skills
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">Skills Investment Impact</div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Employee Satisfaction with Change</span>
+                                <span class="progress-value">87%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Internal Promotion Rate</span>
+                                <span class="progress-value">+23%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="progress-section">
+                            <div class="progress-header">
+                                <span class="progress-label">Productivity Improvement</span>
+                                <span class="progress-value">+41%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employee Journeys Tab -->
+            <div class="tab-content" id="individual">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">18</div>
+                        <div class="metric-label">Successful Transitions</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,12 L8,9 L14,6 L20,4 L26,3 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                Q2 2026 cohort results
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">94%</div>
+                        <div class="metric-label">Retention Rate</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,10 L8,8 L14,6 L20,5 L26,3 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                ↑ 8% vs Q1 transitions
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">$15K</div>
+                        <div class="metric-label">Avg Salary Increase</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,11 L8,9 L14,7 L20,5 L26,4 L32,2 L38,1"/>
+                                        <polygon class="sparkline-arrow" points="36,-1 40,1 36,3"/>
+                                    </svg>
+                                </div>
+                                Post-transition outcomes
+                            </div>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">4.2</div>
+                        <div class="metric-label">Months Avg Transition</div>
+                        <div class="metric-change">
+                            <div class="trend-indicator">
+                                <div class="sparkline">
+                                    <svg viewBox="0 0 40 16">
+                                        <path class="sparkline-path" d="M2,13 L8,11 L14,8 L20,6 L26,4 L32,3 L38,2"/>
+                                        <polygon class="sparkline-arrow" points="36,0 40,2 36,4"/>
+                                    </svg>
+                                </div>
+                                Faster than 6.1mo baseline
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-card">
+                    <div class="employee-header">
+                        <div class="employee-avatar">SJ</div>
+                        <div>
+                            <div class="employee-name">Sarah Johnson</div>
+                            <div class="employee-role">Customer Service Specialist → Process Optimization Analyst</div>
+                        </div>
+                    </div>
+                    
+                    <div class="career-path">
+                        <div class="career-step">Customer Service Rep</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step current">Customer Service Specialist</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step next">Process Optimization Analyst</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step">Operations Manager</div>
+                    </div>
+
+                    <div class="employee-details">
+                        <div class="detail-section">
+                            <h4>Current Role Impact</h4>
+                            <div class="detail-list">
+                                • Email processing (75% automated)<br>
+                                • Customer support (transitioning to L2)<br>
+                                • Quality assurance (maintaining)
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Development Plan</h4>
+                            <div class="detail-list">
+                                • Process optimization certification<br>
+                                • Data analysis fundamentals<br>
+                                • AI collaboration skills
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="employee-card">
+                    <div class="employee-header">
+                        <div class="employee-avatar">MR</div>
+                        <div>
+                            <div class="employee-name">Marcus Rodriguez</div>
+                            <div class="employee-role">Data Entry Clerk → Business Intelligence Analyst</div>
+                        </div>
+                    </div>
+                    
+                    <div class="career-path">
+                        <div class="career-step">Data Entry Clerk</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step current">Junior Analyst</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step next">BI Analyst</div>
+                        <div class="arrow">→</div>
+                        <div class="career-step">Senior Data Scientist</div>
+                    </div>
+
+                    <div class="employee-details">
+                        <div class="detail-section">
+                            <h4>Current Role Impact</h4>
+                            <div class="detail-list">
+                                • Data entry (95% automated)<br>
+                                • Basic analysis (expanding)<br>
+                                • Report validation (maintaining)
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h4>Development Plan</h4>
+                            <div class="detail-list">
+                                • Advanced SQL and Python<br>
+                                • Business intelligence tools<br>
+                                • Statistical analysis methods
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="chart-container">
+                    <div class="chart-title">AI-Enabled Career Success Stories</div>
+                    <div class="success-stories">
+                        <div class="story-card">
+                            <div class="story-header">
+                                <div class="story-avatar">LC</div>
+                                <div>
+                                    <div class="story-name">Lisa Chen</div>
+                                    <div class="story-transformation">Invoice Processor → Business Analyst</div>
+                                </div>
+                            </div>
+                            <div class="story-metrics">
+                                <div class="story-metric">
+                                    <div class="story-metric-value">4</div>
+                                    <div class="metric-label">MONTHS</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">+$18K</div>
+                                    <div class="metric-label">SALARY INCREASE</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">95%</div>
+                                    <div class="metric-label">SATISFACTION</div>
+                                </div>
+                            </div>
+                            <div class="story-quote">
+                                "The AI automation freed me from repetitive invoice processing, and the company invested in my growth. Now I'm analyzing business trends and making strategic recommendations. It's exactly the career growth I was hoping for."
+                            </div>
+                        </div>
+
+                        <div class="story-card">
+                            <div class="story-header">
+                                <div class="story-avatar">MT</div>
+                                <div>
+                                    <div class="story-name">Mike Torres</div>
+                                    <div class="story-transformation">Data Entry → Marketing Analytics</div>
+                                </div>
+                            </div>
+                            <div class="story-metrics">
+                                <div class="story-metric">
+                                    <div class="story-metric-value">6</div>
+                                    <div class="metric-label">MONTHS</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">+$22K</div>
+                                    <div class="metric-label">SALARY INCREASE</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">98%</div>
+                                    <div class="metric-label">SATISFACTION</div>
+                                </div>
+                            </div>
+                            <div class="story-quote">
+                                "When automation took over data entry, I thought I'd lose my job. Instead, the company trained me in analytics. I went from copying numbers to interpreting customer behavior and driving marketing decisions. Best career move ever!"
+                            </div>
+                        </div>
+
+                        <div class="story-card">
+                            <div class="story-header">
+                                <div class="story-avatar">DJ</div>
+                                <div>
+                                    <div class="story-name">David Kim</div>
+                                    <div class="story-transformation">Customer Support → Process Designer</div>
+                                </div>
+                            </div>
+                            <div class="story-metrics">
+                                <div class="story-metric">
+                                    <div class="story-metric-value">5</div>
+                                    <div class="metric-label">MONTHS</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">+$25K</div>
+                                    <div class="metric-label">SALARY INCREASE</div>
+                                </div>
+                                <div class="story-metric">
+                                    <div class="story-metric-value">92%</div>
+                                    <div class="metric-label">SATISFACTION</div>
+                                </div>
+                            </div>
+                            <div class="story-quote">
+                                "AI chatbots handle routine questions now, so I learned process design and improvement. I use my customer service experience to design better user experiences. It's creative, strategic, and pays much better!"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for metric details -->
+    <div id="metricModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Metric Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-breakdown">
+                <!-- Breakdown items will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Animate progress bars on load
+        window.addEventListener('load', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            const skillBars = document.querySelectorAll('.skill-fill');
+            
+            // Animate progress bars
+            progressBars.forEach((bar, index) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 300 + (index * 100)); // Stagger the animations
+            });
+            
+            // Animate skill bars
+            skillBars.forEach((bar, index) => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 800 + (index * 50)); // Start after progress bars, shorter stagger
+            });
+        });
+
+        // Notification dropdown functionality
+        function toggleNotifications() {
+            const dropdown = document.getElementById('notificationDropdown');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            // Close user dropdown if open
+            userDropdown.classList.remove('show');
+            
+            dropdown.classList.toggle('show');
+            
+            // Mark notifications as read when opened
+            if (dropdown.classList.contains('show')) {
+                setTimeout(() => {
+                    const badge = document.querySelector('.notification-badge');
+                    const unreadItems = document.querySelectorAll('.notification-item.unread');
+                    
+                    // Remove unread status
+                    unreadItems.forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    
+                    // Hide badge
+                    if (badge) {
+                        badge.style.display = 'none';
+                    }
+                }, 1000);
+            }
+        }
+
+        // User dropdown functionality
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            
+            // Close notification dropdown if open
+            notificationDropdown.classList.remove('show');
+            
+            dropdown.classList.toggle('show');
+        }
+
+        function selectRole(role) {
+            alert(`Switched to ${role} view`);
+            toggleDropdown();
+        }
+
+        function logout() {
+            alert('Logging out...');
+            toggleDropdown();
+        }
+
+        // Modal functionality for metric cards
+        function showMetricDetails(metricTitle, metricValue, breakdownData) {
+            const modal = document.getElementById('metricModal');
+            const modalTitle = document.querySelector('.modal-title');
+            const modalBreakdown = document.querySelector('.modal-breakdown');
+            
+            modalTitle.textContent = `${metricTitle} - ${metricValue}`;
+            
+            modalBreakdown.innerHTML = '';
+            breakdownData.forEach(item => {
+                const breakdownItem = document.createElement('div');
+                breakdownItem.className = 'breakdown-item';
+                breakdownItem.innerHTML = `
+                    <span class="breakdown-label">${item.label}</span>
+                    <span class="breakdown-value">${item.value}</span>
+                `;
+                modalBreakdown.appendChild(breakdownItem);
+            });
+            
+            modal.classList.add('show');
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('metricModal');
+            modal.classList.remove('show');
+        }
+        
+        // Add click handlers to metric cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const metricCards = document.querySelectorAll('.metric-card');
+            
+            metricCards.forEach((card, index) => {
+                card.addEventListener('click', function() {
+                    const value = card.querySelector('.metric-value').textContent;
+                    const label = card.querySelector('.metric-label').textContent;
+                    
+                    // Sample breakdown data - would come from API in real implementation
+                    const breakdownData = generateBreakdownData(label, value);
+                    
+                    showMetricDetails(label, value, breakdownData);
+                });
+            });
+        });
+        
+        function generateBreakdownData(label, value) {
+            const breakdowns = {
+                'Annual Task Costs': [
+                    { label: 'HR Administration & Compliance', value: '$847K' },
+                    { label: 'Data Entry & Processing', value: '$526K' },
+                    { label: 'Email Management & Communication', value: '$398K' },
+                    { label: 'Report Generation & Analysis', value: '$312K' },
+                    { label: 'Meeting Coordination & Scheduling', value: '$234K' },
+                    { label: 'Document Review & Approval', value: '$187K' },
+                    { label: 'Customer Service Inquiries', value: '$156K' },
+                    { label: 'Inventory & Asset Management', value: '$143K' },
+                    { label: 'Expense Processing & Reconciliation', value: '$127K' }
+                ],
+                'Unique Tasks Mapped': [
+                    { label: 'High Complexity (>4 hrs, cognitive)', value: '156 tasks' },
+                    { label: 'Medium Complexity (1-4 hrs, mixed)', value: '341 tasks' },
+                    { label: 'Low Complexity (<1 hr, routine)', value: '350 tasks' },
+                    { label: 'HR & People Operations', value: '203 tasks' },
+                    { label: 'Finance & Administration', value: '178 tasks' },
+                    { label: 'Customer Operations', value: '145 tasks' },
+                    { label: 'Marketing & Communications', value: '127 tasks' },
+                    { label: 'IT & Technical Support', value: '98 tasks' },
+                    { label: 'Legal & Compliance', value: '96 tasks' }
+                ],
+                'KSAO Alignment': [
+                    { label: 'Technical Skills Gap', value: '74% aligned' },
+                    { label: 'Communication Skills', value: '69% aligned' },
+                    { label: 'Problem-Solving Abilities', value: '71% aligned' },
+                    { label: 'Domain Knowledge', value: '61% aligned' },
+                    { label: 'Leadership Competencies', value: '58% aligned' },
+                    { label: 'Digital Literacy', value: '76% aligned' },
+                    { label: 'Analytical Thinking', value: '65% aligned' },
+                    { label: 'Adaptability & Learning', value: '72% aligned' },
+                    { label: 'Collaboration Skills', value: '68% aligned' }
+                ],
+                'L&D Reinvestment Fund': [
+                    { label: 'Process Automation Savings', value: '$187K' },
+                    { label: 'AI Chatbot Implementation', value: '$134K' },
+                    { label: 'Workflow Optimization', value: '$98K' },
+                    { label: 'Document Processing Automation', value: '$76K' },
+                    { label: 'Data Analytics Improvements', value: '$45K' },
+                    { label: 'Q1 2026 Available Allocation', value: '$153K' },
+                    { label: 'Q2 2026 Planned Investment', value: '$158K' },
+                    { label: 'Q3-Q4 2026 Strategic Reserve', value: '$229K' }
+                ],
+                'Potential Annual Savings': [
+                    { label: 'Email Response Automation (HR)', value: '$67K' },
+                    { label: 'Invoice Processing (Finance)', value: '$43K' },
+                    { label: 'Meeting Scheduling (Operations)', value: '$38K' },
+                    { label: 'Customer Inquiry Routing', value: '$31K' },
+                    { label: 'Expense Report Processing', value: '$24K' },
+                    { label: 'Document Template Generation', value: '$12K' }
+                ],
+                'Roles Affected': [
+                    { label: 'Administrative Assistants', value: '6 roles' },
+                    { label: 'HR Coordinators', value: '4 roles' },
+                    { label: 'Finance Clerks', value: '3 roles' },
+                    { label: 'Customer Service Reps', value: '3 roles' },
+                    { label: 'Data Entry Specialists', value: '2 roles' }
+                ],
+                'Months ROI': [
+                    { label: 'Quick Win Implementations', value: '2-4 months' },
+                    { label: 'Medium Complexity Projects', value: '4-6 months' },
+                    { label: 'Complex Workflow Changes', value: '6-9 months' },
+                    { label: 'Full Department Transformation', value: '9-12 months' }
+                ],
+                'Quick Wins Available': [
+                    { label: 'Email Auto-Response Setup', value: 'High Impact' },
+                    { label: 'Calendar Scheduling Bots', value: 'High Impact' },
+                    { label: 'Document Template Automation', value: 'Medium Impact' },
+                    { label: 'Basic Data Validation', value: 'Medium Impact' },
+                    { label: 'Simple Report Generation', value: 'Medium Impact' },
+                    { label: 'FAQ Chatbot Implementation', value: 'High Impact' }
+                ],
+                'Total Reinvestment Fund': [
+                    { label: 'Q1 2026 Automation Savings', value: '$147K' },
+                    { label: 'Q2 2026 Process Improvements', value: '$134K' },
+                    { label: 'Q3 2026 AI Implementation', value: '$129K' },
+                    { label: 'Q4 2026 Workflow Optimization', value: '$130K' }
+                ],
+                'L&D Investments Made': [
+                    { label: 'AI/ML Fundamentals Training', value: '$98K' },
+                    { label: 'Process Design Certification', value: '$87K' },
+                    { label: 'Data Analytics Bootcamp', value: '$76K' },
+                    { label: 'Digital Transformation Leadership', value: '$65K' },
+                    { label: 'Customer Experience Design', value: '$43K' },
+                    { label: 'Agile Methodology Training', value: '$18K' }
+                ],
+                'Employees Reskilled': [
+                    { label: 'AI/ML Fundamentals Program', value: '34 employees' },
+                    { label: 'Process Design Certification', value: '28 employees' },
+                    { label: 'Data Analytics Bootcamp', value: '23 employees' },
+                    { label: 'Digital Leadership Track', value: '19 employees' },
+                    { label: 'Customer Experience Design', value: '15 employees' },
+                    { label: 'Agile Methodology Training', value: '5 employees' }
+                ],
+                'Training ROI': [
+                    { label: 'AI/ML Fundamentals', value: '4.2x ROI' },
+                    { label: 'Process Design', value: '3.8x ROI' },
+                    { label: 'Data Analytics', value: '3.5x ROI' },
+                    { label: 'Digital Leadership', value: '2.9x ROI' },
+                    { label: 'Customer Experience', value: '2.7x ROI' },
+                    { label: 'Agile Methodology', value: '2.1x ROI' }
+                ]
+            };
+            
+            return breakdowns[label] || [
+                { label: 'Component 1', value: '45%' },
+                { label: 'Component 2', value: '35%' },
+                { label: 'Component 3', value: '20%' }
+            ];
+        }
+
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.user-profile')) {
+                const dropdown = document.getElementById('userDropdown');
+                dropdown.classList.remove('show');
+            }
+            
+            if (!event.target.closest('[style*="position: relative"]') && 
+                !event.target.closest('.notification-bell')) {
+                const notificationDropdown = document.getElementById('notificationDropdown');
+                notificationDropdown.classList.remove('show');
+            }
+            
+            // Close modal when clicking overlay
+            if (event.target.classList.contains('modal-overlay')) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
